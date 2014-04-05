@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context="natemobile.apps.mytwitterappv2.ComposeActivity" >
+  
+   <RelativeLayout
+       android:id="@+id/rvLayout1"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="5dp"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentTop="true" >
+
+       <ImageView
+           android:id="@+id/ivProfileImage"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_centerVertical="true"
+           android:adjustViewBounds="true"
+           android:maxHeight="100dp"
+           android:maxWidth="100dp"
+           android:scaleType="fitXY"
+           android:src="@drawable/ic_launcher" />
+
+       <TextView
+           android:id="@+id/tvTwitterName"
+           android:textStyle="bold"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="12dp"
+           android:layout_marginLeft="5dp"
+           android:layout_toRightOf="@+id/ivProfileImage"
+           android:textColor="#575757"
+           android:textSize="12sp" />
+
+       <!--
+           1.) Align this text as tvName
+           2.) Below tvName		-->
+
+       <TextView
+           android:id="@+id/tvTwitterTag"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignLeft="@+id/tvTwitterName"
+           android:layout_below="@+id/tvTwitterName"
+           android:textColor="#575757"
+           android:textSize="12sp" />
+       
+       <RelativeLayout
+            android:id="@+id/rvLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@+id/tvTwitterTag" >
+
+            <TextView
+                android:id="@+id/tvCharsLeft"
+                android:layout_width="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:textSize="12sp" />
+        </RelativeLayout>
+       
+   </RelativeLayout>
+    
+    <EditText
+        android:id="@+id/etTwitterMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rvLayout1"
+        android:textColor="#575757"
+        android:ems="10"
+        android:inputType="textMultiLine" >
+
+        <requestFocus />
+    </EditText> 
+
+
+</RelativeLayout>
+
