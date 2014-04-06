@@ -96,10 +96,11 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
+		lastTweetId = -1;	// Reset lastTweetId
 		lvTweets = (PullToRefreshListView) getActivity().findViewById( R.id.lvTweets );
 
 		ArrayList<Tweet> tweets = new ArrayList<Tweet>();
-		
+
 		// Setup adapter
 		adapter = new TweetsAdapter( getActivity(), tweets);	
 		lvTweets.setAdapter( adapter );		
@@ -141,20 +142,13 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 			}
 		});
 		
-		// Setup listener when click on tweent's profile image
+		// Setup listener when click on Tweet item
 		lvTweets.setOnItemClickListener( new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
 				Tweet tweet = getAdapter().getItem(position);
-				Log.d("DEBUG", "On Itme Clikc belong to " + tweet.getUser().getScreenName() );
-				
-				view.setTag(tweet.getUser().getScreenName());
-				
-				// TODO: Get Child
-				
 				itemListener.onTweetItemSelect( tweet );
-				
 			}
 		});
 	}
@@ -188,8 +182,7 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 			adapter.addAll( tweets );
 			adapter.notifyDataSetChanged();
 			listener.onResponseReceived( tweets.size() + " Tweet(s)");
-		}
-	
+		}	
 
 		// Prevent Index Out Of Bound
 		if ( tweets.size() > 0 ) {

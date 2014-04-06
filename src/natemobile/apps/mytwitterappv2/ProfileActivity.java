@@ -145,4 +145,10 @@ public class ProfileActivity extends FragmentActivity implements ResultDataAPILi
 		
 	}
 
+	@Override
+	public boolean checkNetworkConnect() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

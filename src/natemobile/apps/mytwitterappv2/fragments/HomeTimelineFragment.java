@@ -35,32 +35,38 @@ public class HomeTimelineFragment extends TweetsListFragment {
 	
 	@Override
 	public void requestTwitterData(int count, long lastId) {
-		// Setup handle Rest Client response
-		JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
-			@Override
-			public void onSuccess(JSONArray jsonTweets) {
-				processTweetsData( jsonTweets );
-			}
-
-			@Override
-			public void onFailure(Throwable e, JSONObject errorObject) {				
-				processFailureResponse( errorObject );
-			}
-		};
-
-		// Prepare a request
-		RequestParams request = new RequestParams("count", count);
-
-		boolean isSubsequentLoad = (lastId != -1);
 		
-		if ( isSubsequentLoad ) {
-			//since_id
-			request.put("max_id", Long.toString(lastId) );
-			// save the id
-			lastTweetId = lastId;
-		}
+		if ( listener.checkNetworkConnect() ) {
 
-		// Call to MyTwitterApp singleton
-		MyTwitterApp.getRestClient().getHomeTimeline( handler, request );		
+			// Setup handle Rest Client response
+			JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
+				@Override
+				public void onSuccess(JSONArray jsonTweets) {
+					processTweetsData( jsonTweets );
+				}
+
+				@Override
+				public void onFailure(Throwable e, JSONObject errorObject) {				
+					processFailureResponse( errorObject );
+				}
+			};
+
+			// Prepare a request
+			RequestParams request = new RequestParams("count", count);
+
+			boolean isSubsequentLoad = (lastId != -1);
+
+			if ( isSubsequentLoad ) {
+				//since_id
+				request.put("max_id", Long.toString(lastId) );
+				// save the id
+				lastTweetId = lastId;
+			}
+
+			// Call to MyTwitterApp singleton
+			MyTwitterApp.getRestClient().getHomeTimeline( handler, request );	
+		} else {
+			lvTweets.onRefreshComplete();
+		}
 	}
 }

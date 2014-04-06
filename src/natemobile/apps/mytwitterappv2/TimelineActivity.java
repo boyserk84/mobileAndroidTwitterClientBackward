@@ -17,6 +17,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -90,11 +91,10 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode( ActionBar.NAVIGATION_MODE_TABS );
 		actionBar.setDisplayShowTitleEnabled( true );
-		Tab tabHome = actionBar.newTab().setText("HOME").setTag( "HomeTimelineFragment" ).setIcon(R.drawable.ic_home)
+		Tab tabHome = actionBar.newTab().setText("").setTag( "HomeTimelineFragment" ).setIcon(R.drawable.ic_home)
 				.setTabListener( this );
-		Tab tabMention = actionBar.newTab().setText("Mentions").setTag( "MentionsFragment" ).setIcon( R.drawable.ic_mention )
+		Tab tabMention = actionBar.newTab().setText("").setTag( "MentionsFragment" ).setIcon( R.drawable.ic_mention )
 				.setTabListener( this );
-
 		actionBar.addTab(tabHome);
 		actionBar.addTab(tabMention);
 		actionBar.selectTab( tabHome );
@@ -144,12 +144,17 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		// as you specify a parent activity in AndroidManifest.xml.
 		boolean result = super.onOptionsItemSelected(item);
 		switch ( item.getItemId() ) {
+			// Compose a Tweet message
 			case R.id.miCompose:
-				openProfileActivity( currentSessionUser.getScreenName() );
-				//openComposeActivity();
+				openComposeActivity();
 				result = true;
 				break;
 				
+			// See a profile
+			case R.id.miProfile:
+				openProfileActivity( currentSessionUser.getScreenName() );
+				result = true;
+				break;
 			default:
 				break;
 		}
@@ -303,7 +308,7 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		notifyOnToast( message );
 	}
 
-	// When we recieve reponse event from fragment and we need to switch to profile activity
+	// When we recieve reponse event from fragment and we need to switch to view activity
 	@Override
 	public void onTweetItemSelect(Tweet tweet) {
 		User userData = tweet.getUser();
@@ -311,5 +316,18 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		// TODO: DO something else like open view activity
 		//openProfileActivity( screenName );
 		
+	}
+
+	// When Internet connection is lost, notifying user.
+	@Override
+	public boolean checkNetworkConnect() {
+		boolean result = false;
+		if ( isNetworkAvailable() ) {
+			result = true;
+		} else {
+			notifyOnToast("Error: No Internet connection!");
+			result = false;
+		}
+		return result;
 	}
 }
