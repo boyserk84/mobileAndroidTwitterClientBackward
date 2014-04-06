@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import natemobile.apps.mytwitterappv2.R;
 import natemobile.apps.mytwitterappv2.adapters.TweetsAdapter;
+import natemobile.apps.mytwitterappv2.interfaces.OnTweetItemSelected;
 import natemobile.apps.mytwitterappv2.interfaces.RequestDataAPI;
 import natemobile.apps.mytwitterappv2.interfaces.ResultDataAPIListener;
 import natemobile.apps.mytwitterappv2.models.Tweet;
@@ -20,6 +21,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 
 
 import eu.erikw.PullToRefreshListView;
@@ -33,6 +36,7 @@ import eu.erikw.PullToRefreshListView.OnRefreshListener;
  */
 public class TweetsListFragment extends Fragment implements RequestDataAPI {
 	
+	public static final int TWEETS_WHEN_LOAD = 25;
 	public static final int TWEETS_TO_LOAD_WHEN_SCROLL = 10;
 	
 	protected long lastTweetId = -1;
@@ -49,8 +53,13 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 	/** Listener from activity, using for listening for response result in fragment so that we can show it to user. */
 	ResultDataAPIListener listener;
 	
+	OnTweetItemSelected itemListener;
+	
 	/** Adapter */
 	TweetsAdapter adapter;
+	
+	/** Flag indicate if this is the first time loading data */
+	private boolean isFirstLoad = true;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,12 +74,22 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
+		// Make sure activity implements ResultDataAPIListner
 		if (activity instanceof ResultDataAPIListener) {
 			listener = (ResultDataAPIListener) activity;
 		} else {
 			throw new ClassCastException(activity.toString()
-					+ " must implement MyListFragment.OnResponseReceived()");
+					+ " must implement ResultDataAPIListenr.OnResponseReceived() in activity class.");
 		}
+		
+		// Make sure activity implements OnTweetItemSelected
+		if (activity instanceof OnTweetItemSelected) {
+			itemListener = (OnTweetItemSelected) activity;
+		} else {
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnTweetItemSelected.onTweetItemSelect() in activity class.");
+		}
+
 	}
 
 	@Override
@@ -103,7 +122,10 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 			
 			@Override
 			public void onLoadMore(int page, int totalItemsCount) {
-				requestTwitterData( TWEETS_TO_LOAD_WHEN_SCROLL, lastTweetId);
+				int loadCount = isFirstLoad? TWEETS_WHEN_LOAD : TWEETS_TO_LOAD_WHEN_SCROLL;
+				isFirstLoad = false;
+				requestTwitterData( loadCount, lastTweetId);
+				
 			}
 		});
 		
@@ -116,6 +138,23 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 				// once the loading is done. This can be done from here or any
 				// place such as when the network request has completed successfully.
 				requestTwitterData( TWEETS_TO_LOAD_WHEN_SCROLL, lastTweetId);
+			}
+		});
+		
+		// Setup listener when click on tweent's profile image
+		lvTweets.setOnItemClickListener( new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				Tweet tweet = getAdapter().getItem(position);
+				Log.d("DEBUG", "On Itme Clikc belong to " + tweet.getUser().getScreenName() );
+				
+				view.setTag(tweet.getUser().getScreenName());
+				
+				// TODO: Get Child
+				
+				itemListener.onTweetItemSelect( tweet );
+				
 			}
 		});
 	}

@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="natemobile.apps.mytwitterappv2.TimelineActivity"
-    tools:ignore="MergeRootFrame" >
-    
+    tools:ignore="MergeRootFrame"
+    android:background="#33b5fa" >
+
     <FrameLayout
         android:id="@+id/frameContainer"
         android:layout_width="wrap_content"
@@ -13,6 +14,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" >
     </FrameLayout>
-    
+
 </RelativeLayout>
 

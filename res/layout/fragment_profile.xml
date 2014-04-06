@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <RelativeLayout
+        android:id="@+id/rlHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+
+        <ImageView
+            android:id="@+id/ivProfileImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:adjustViewBounds="true"
+            android:maxHeight="100dp"
+            android:maxWidth="100dp"
+            android:scaleType="fitXY"
+            android:src="@null" />
+
+        <TextView
+            android:id="@+id/tvProfileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/ivProfileImage"
+            android:text="Twitter Name"
+            android:textColor="#575757"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvProfileBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tvProfileName"
+            android:layout_below="@+id/tvProfileName"
+            android:text="Tag Line"
+            android:textColor="#575757"
+            android:textSize="12sp" />
+    </RelativeLayout>
+    
+    <LinearLayout
+        android:id="@+id/llCounts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlHeader"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal" 
+        android:layout_centerHorizontal="true"
+        android:background="#000000">
+        
+        <TextView
+           	android:id="@+id/tvFollowers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_marginLeft="20dp"
+            android:text="15 Followers" >
+            
+        </TextView>
+        
+        <TextView
+            android:id="@+id/tvFollowings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="15 Followings">
+        </TextView>
+        
+    </LinearLayout>    
+
+</RelativeLayout>

@@ -22,8 +22,14 @@
        <item name="android:actionBarStyle">@style/MyTwitterActionBarStyle</item>
     </style>
     
-     <style name="MyTwitterActionBarStyle" parent="@android:style/Widget.ActionBar">
+    <style name="MyTwitterActionBarStyle" parent="@android:style/Widget.ActionBar">
        <item name="android:background">#33b5fa</item>
     </style>
+    
+     <style name="MyActionBarTabs" parent="@style/Widget.AppCompat.ActionBar.TabView">
+        <item name="android:background">#33b5fa</item>
+     </style>
+    
+
 
 </resources>

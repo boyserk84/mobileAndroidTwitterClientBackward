@@ -25,8 +25,6 @@ public class HomeTimelineFragment extends TweetsListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		//requestTwitterData( 25 , lastTweetId);
 	}
 	
 	@Override

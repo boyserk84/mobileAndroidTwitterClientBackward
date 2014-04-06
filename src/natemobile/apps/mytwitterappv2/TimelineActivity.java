@@ -6,6 +6,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import natemobile.apps.mytwitterappv2.fragments.HomeTimelineFragment;
 import natemobile.apps.mytwitterappv2.fragments.MentionsFragment;
+import natemobile.apps.mytwitterappv2.interfaces.OnTweetItemSelected;
 import natemobile.apps.mytwitterappv2.interfaces.ResultDataAPIListener;
 import natemobile.apps.mytwitterappv2.models.Tweet;
 import natemobile.apps.mytwitterappv2.models.User;
@@ -15,6 +16,7 @@ import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -26,11 +28,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class TimelineActivity extends FragmentActivity implements TabListener, ResultDataAPIListener {
+/**
+ * TimelineActivity
+ * 
+ * Showing HomeTimeline and Mentioned tweets.
+ * 
+ * To get TweetsListFragment to work, it requires ResultDataAPIListener
+ * 
+ * @author nkemavaha
+ *
+ */
+public class TimelineActivity extends FragmentActivity implements TabListener, ResultDataAPIListener,OnTweetItemSelected {
 	public static final int COMPOSE_REQUEST_CODE = 101;
 	public static final int COMPOSE_REQUEST_FAIL = -99;
+	public static final int USERPROFILE_REQUEST_CODE = 102;
 	
 	public static final String USER_DATA_KEY = "userData";
+	public static final String USER_SCREEN_NAME_KEY = "screen_name";
 	
 	public static final int INITIAL_TWEETS_TO_LOAD = 25;
 	
@@ -67,7 +81,6 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		
 		setupNavigationTabs();
 		
-		
 	}
 	
 	/**
@@ -81,7 +94,7 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 				.setTabListener( this );
 		Tab tabMention = actionBar.newTab().setText("Mentions").setTag( "MentionsFragment" ).setIcon( R.drawable.ic_mention )
 				.setTabListener( this );
-		
+
 		actionBar.addTab(tabHome);
 		actionBar.addTab(tabMention);
 		actionBar.selectTab( tabHome );
@@ -132,7 +145,8 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		boolean result = super.onOptionsItemSelected(item);
 		switch ( item.getItemId() ) {
 			case R.id.miCompose:
-				openComposeActivity();
+				openProfileActivity( currentSessionUser.getScreenName() );
+				//openComposeActivity();
 				result = true;
 				break;
 				
@@ -142,6 +156,16 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		
 		return result;
 		
+	}
+	
+	/**
+	 * Helper function to handle open a profile activity.
+	 * @param screenName	Screen name
+	 */
+	private void openProfileActivity(String screenName ) {
+		Intent i = new Intent(getBaseContext(), ProfileActivity.class );
+		i.putExtra( USER_SCREEN_NAME_KEY, screenName );	
+		startActivity( i );
 	}
 	
 	/**
@@ -277,5 +301,15 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 	@Override
 	public void onResponseReceived(String message) {
 		notifyOnToast( message );
+	}
+
+	// When we recieve reponse event from fragment and we need to switch to profile activity
+	@Override
+	public void onTweetItemSelect(Tweet tweet) {
+		User userData = tweet.getUser();
+		String screenName = userData.getScreenName();
+		// TODO: DO something else like open view activity
+		openProfileActivity( screenName );
+		
 	}
 }

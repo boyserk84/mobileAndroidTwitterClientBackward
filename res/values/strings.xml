@@ -12,5 +12,7 @@
     <string name="hellointro">Hello.</string>
     <string name="bodyintro">Welcome to Nate Twitter App!</string>
     <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_userprofile">UserprofileActivity</string>
+    <string name="title_activity_usertimeline">UsertimelineActivity</string>
 
 </resources>

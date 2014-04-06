@@ -22,6 +22,7 @@ public class User implements Serializable{
 	private int numTweets;
 	private int followersCount;
 	private int friendsCount;
+	private String tagline;
 	
 	public User () {}
 	
@@ -56,6 +57,10 @@ public class User implements Serializable{
     public int getFriendsCount() {
         return friendsCount;
     }
+    
+    public String getTagline() {
+    	return tagline;
+    }
 
     public static User fromJson(JSONObject json) {
         User u = new User();
@@ -67,6 +72,7 @@ public class User implements Serializable{
         	u.numTweets = json.getInt("statuses_count");
         	u.followersCount = json.getInt("followers_count");
         	u.friendsCount = json.getInt("friends_count");
+        	u.tagline = json.getString("description");
         	u.profileImageUrl = json.getString("profile_image_url");
         } catch (JSONException e) {
             e.printStackTrace();

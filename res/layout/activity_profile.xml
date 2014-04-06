@@ -1,0 +1,30 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="natemobile.apps.mytwitterappv2.ProfileActivity"
+    tools:ignore="MergeRootFrame" 
+    android:background="#33b5fa">
+    
+    <fragment
+        android:id="@+id/fragmentUserProfile"
+        android:name="natemobile.apps.mytwitterappv2.fragments.ProfileFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        tools:layout="@layout/fragment_profile"
+        />
+    <fragment
+        android:id="@+id/fragmentUserTimeline"
+        android:layout_below="@+id/fragmentUserProfile"
+        android:name="natemobile.apps.mytwitterappv2.fragments.UserTimelineFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        tools:layout="@layout/fragment_tweetslist" />
+
+</RelativeLayout>
+
