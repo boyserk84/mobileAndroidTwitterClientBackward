@@ -309,7 +309,7 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		User userData = tweet.getUser();
 		String screenName = userData.getScreenName();
 		// TODO: DO something else like open view activity
-		openProfileActivity( screenName );
+		//openProfileActivity( screenName );
 		
 	}
 }

@@ -8,7 +8,6 @@ import natemobile.apps.mytwitterappv2.TimelineActivity;
 import natemobile.apps.mytwitterappv2.models.Tweet;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -50,6 +49,8 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 		
 		ImageView ivProfile = (ImageView) view.findViewById(R.id.ivProfile);
 		ImageLoader.getInstance().displayImage( tweet.getUser().getProfileImage(), ivProfile );
+		// Save information so that it is being clicked we know what to pass to activity
+		ivProfile.setTag( tweet.getUser().getScreenName() );
 		
 		// TODO: 2nd iteration: Use HTML text so that we click on URL link if any
 		
@@ -61,6 +62,18 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 		
 		TextView tvTimeStamp = (TextView) view.findViewById( R.id.tvTimeStamp );
 		tvTimeStamp.setText( tweet.getRelativeTimeStamp( getContext() ) );
+		
+		// Listener when click on a profile image
+		ivProfile.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
+				profileIntent.putExtra(TimelineActivity.USER_SCREEN_NAME_KEY, (String) v.getTag());
+				getContext().startActivity( profileIntent );
+				
+			}
+		});
 		
 		return view;
 		

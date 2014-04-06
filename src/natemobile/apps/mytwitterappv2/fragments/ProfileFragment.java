@@ -1,12 +1,7 @@
 package natemobile.apps.mytwitterappv2.fragments;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import natemobile.apps.mytwitterappv2.R;
-import natemobile.apps.mytwitterappv2.interfaces.OnTweetItemSelected;
-import natemobile.apps.mytwitterappv2.interfaces.ResultDataAPIListener;
 import natemobile.apps.mytwitterappv2.models.User;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * ProfileFragment
