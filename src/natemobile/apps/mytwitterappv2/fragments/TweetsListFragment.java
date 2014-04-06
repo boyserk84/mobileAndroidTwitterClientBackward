@@ -138,7 +138,7 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 				// Make sure you call listView.onRefreshComplete()
 				// once the loading is done. This can be done from here or any
 				// place such as when the network request has completed successfully.
-				requestTwitterData( TWEETS_TO_LOAD_WHEN_SCROLL, lastTweetId);
+				requestTwitterData( TWEETS_WHEN_LOAD, lastTweetId);
 			}
 		});
 		

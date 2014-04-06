@@ -34,6 +34,10 @@ public class ViewTweetActivity extends Activity {
 	
 	ImageView ivProfileImage;
 	
+	///////////////
+	// Data fields
+	///////////////
+	
 	private Tweet tweet;
 	
 	@Override
