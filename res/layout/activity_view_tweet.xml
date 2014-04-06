@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="natemobile.apps.mytwitterappv2.ViewTweetActivity"
+    tools:ignore="MergeRootFrame" 
+    android:background="#FFFFFF" >
+    
+     <RelativeLayout
+       android:id="@+id/rvViewLayout1"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="5dp"
+       android:layout_marginTop="12dp"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentTop="true" >
+
+       <ImageView
+           android:id="@+id/ivViewProfileImage"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_centerVertical="true"
+           android:adjustViewBounds="true"
+           android:maxHeight="100dp"
+           android:maxWidth="100dp"
+           android:src="@drawable/ic_launcher" />
+
+       <TextView
+           android:id="@+id/tvViewTwitterName"
+           android:textStyle="bold"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginLeft="5dp"
+           android:layout_toRightOf="@+id/ivViewProfileImage"
+           android:textColor="#575757"
+           android:textSize="12sp" />
+
+       <!--
+           1.) Align this text as tvName
+           2.) Below tvName		-->
+
+       <TextView
+           android:id="@+id/tvViewTwitterDate"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignLeft="@+id/tvViewTwitterName"
+           android:layout_below="@+id/tvViewTwitterName"
+           android:textColor="#575757"
+           android:textSize="12sp" />
+       
+   </RelativeLayout>
+    
+    <TextView
+        android:id="@+id/tvViewTweetMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rvViewLayout1"
+        android:layout_marginLeft="5dp"
+        android:textColor="#575757" />
+
+
+</RelativeLayout>
+

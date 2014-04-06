@@ -308,14 +308,12 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		notifyOnToast( message );
 	}
 
-	// When we recieve reponse event from fragment and we need to switch to view activity
+	// When we received a response event from fragment and we need to switch to view activity
 	@Override
 	public void onTweetItemSelect(Tweet tweet) {
-		User userData = tweet.getUser();
-		String screenName = userData.getScreenName();
-		// TODO: DO something else like open view activity
-		//openProfileActivity( screenName );
-		
+		Intent i = new Intent( getBaseContext(), ViewTweetActivity.class);
+		i.putExtra( ViewTweetActivity.VIEW_TWEET_KEY, tweet);
+		startActivity(i);
 	}
 
 	// When Internet connection is lost, notifying user.

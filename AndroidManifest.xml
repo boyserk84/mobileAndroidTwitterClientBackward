@@ -57,8 +57,13 @@
         </activity>
         <activity
             android:name="natemobile.apps.mytwitterappv2.ProfileActivity"
+            android:label="@string/title_activity_profile"
+            android:theme="@style/MyTwitterActionBarStyleTheme" >
+        </activity>
+        <activity
+            android:name="natemobile.apps.mytwitterappv2.ViewTweetActivity"
             android:theme="@style/MyTwitterActionBarStyleTheme"
-            android:label="@string/title_activity_profile" >
+            android:label="@string/title_activity_view_tweet" >
         </activity>
     </application>
 

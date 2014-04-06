@@ -141,8 +141,9 @@ public class ProfileActivity extends FragmentActivity implements ResultDataAPILi
 
 	@Override
 	public void onTweetItemSelect(Tweet tweet) {
-		// TODO Auto-generated method stub
-		
+		Intent i = new Intent( getBaseContext(), ViewTweetActivity.class);
+		i.putExtra( ViewTweetActivity.VIEW_TWEET_KEY, tweet);
+		startActivity(i);
 	}
 
 	@Override

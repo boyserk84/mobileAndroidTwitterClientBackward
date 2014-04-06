@@ -1,5 +1,6 @@
 package natemobile.apps.mytwitterappv2.models;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ import android.text.format.DateUtils;
  * @author nkemavaha
  *
  */
-public class Tweet {
+public class Tweet implements Serializable{
+	private static final long serialVersionUID = 778296243997564951L;
 	private String body;
 	private long uid;
 	private boolean favorited;
