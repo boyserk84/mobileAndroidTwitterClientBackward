@@ -8,11 +8,14 @@ import natemobile.apps.mytwitterappv2.interfaces.OnTweetItemSelected;
 import natemobile.apps.mytwitterappv2.interfaces.ResultDataAPIListener;
 import natemobile.apps.mytwitterappv2.models.Tweet;
 import natemobile.apps.mytwitterappv2.models.User;
+import natemobile.apps.mytwitterappv2.utils.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -20,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -134,10 +138,7 @@ public class ProfileActivity extends FragmentActivity implements ResultDataAPILi
 	}
 
 	@Override
-	public void onResponseReceived(String message) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onResponseReceived(String message) {}
 
 	@Override
 	public void onTweetItemSelect(Tweet tweet) {
@@ -148,8 +149,22 @@ public class ProfileActivity extends FragmentActivity implements ResultDataAPILi
 
 	@Override
 	public boolean checkNetworkConnect() {
-		// TODO Auto-generated method stub
-		return false;
+		boolean result = false;
+		if ( NetworkUtils.isNetworkAvailable( (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE) ) ) {
+			result = true;
+		} else {
+			notifyOnToast("Error: No Internet connection!");
+			result = false;
+		}
+		return result;
 	}
+	
+	/**
+	 * Helper function to display a toast message
+	 * @param msg		Message to display
+	 */
+	private void notifyOnToast(String msg) {
+		Toast.makeText( this, msg, Toast.LENGTH_SHORT).show();	
+	}	
 
 }

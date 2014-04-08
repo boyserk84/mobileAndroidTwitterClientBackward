@@ -1,33 +1,31 @@
 package natemobile.apps.mytwitterappv2;
 
-import org.json.JSONObject;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-
 import natemobile.apps.mytwitterappv2.fragments.HomeTimelineFragment;
 import natemobile.apps.mytwitterappv2.fragments.MentionsFragment;
 import natemobile.apps.mytwitterappv2.interfaces.OnTweetItemSelected;
 import natemobile.apps.mytwitterappv2.interfaces.ResultDataAPIListener;
 import natemobile.apps.mytwitterappv2.models.Tweet;
 import natemobile.apps.mytwitterappv2.models.User;
+import natemobile.apps.mytwitterappv2.utils.NetworkUtils;
+
+import org.json.JSONObject;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 /**
  * TimelineActivity
@@ -195,8 +193,7 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Check if there is any internet connection, before sending request
-		if ( isNetworkAvailable() == false ) {
-			notifyOnToast("Error: No Internet Connection");
+		if ( checkNetworkConnect() == false ) {
 			return;
 		}
 		
@@ -251,17 +248,7 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		}
 	}
 	
-    /**
-     * Helper function to help detect if there is internet available
-     * Reference & credits: http://stackoverflow.com/questions/4238921/android-detect-whether-there-is-an-internet-connection-available
-     * 
-     * @return
-     */
-    public boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager  = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+
     
     //////////////////////////////////////
     /// OnTab Selected Listeners
@@ -320,7 +307,7 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 	@Override
 	public boolean checkNetworkConnect() {
 		boolean result = false;
-		if ( isNetworkAvailable() ) {
+		if ( NetworkUtils.isNetworkAvailable( (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE) ) ) {
 			result = true;
 		} else {
 			notifyOnToast("Error: No Internet connection!");

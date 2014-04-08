@@ -1,26 +1,23 @@
 package natemobile.apps.mytwitterappv2.fragments;
 
 import natemobile.apps.mytwitterappv2.MyTwitterApp;
+import natemobile.apps.mytwitterappv2.interfaces.ITwitterUserFragment;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
+
+import android.os.Bundle;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import android.os.Bundle;
-
 /**
  * UserTimeline fragment
+ * 
+ * Showing a time line of a specific user.
  * @author nkemavaha
  *
  */
-public class UserTimelineFragment extends TweetsListFragment {
-
-	/**
-	 * Flag indicate if this is the first time we show this since Activity will feed data directly to this fragment only for the first time.
-	 */
-	private boolean isFirstLoadDone = false;
+public class UserTimelineFragment extends TweetsListFragment implements ITwitterUserFragment {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -28,46 +25,15 @@ public class UserTimelineFragment extends TweetsListFragment {
 	}
 	
 	@Override
-	public void requestTwitterData(int count, long lastId) {	
-		if ( isFirstLoadDone == true ) {
-			// Setup handle Rest Client response
-			JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
-				@Override
-				public void onSuccess(JSONArray jsonTweets) {
-					processTweetsData( jsonTweets );
-				}
-
-				@Override
-				public void onFailure(Throwable e, JSONObject errorObject) {				
-					processFailureResponse( errorObject );
-				}
-			};
-
-			// Prepare a request
-			RequestParams request = new RequestParams("count", count);
-
-			boolean isSubsequentLoad = (lastId != -1);
-
-			if ( isSubsequentLoad ) {
-				//since_id
-				request.put("max_id", Long.toString(lastId) );
-				// save the id
-				lastTweetId = lastId;
-			}
-
-			MyTwitterApp.getRestClient().getUserTimeline(handler, request);
-		}
+	public void callAPI(JsonHttpResponseHandler handler, RequestParams params) {
+		MyTwitterApp.getRestClient().getUserTimeline(handler, params);
 	}
 	
-	/**
-	 * Populate Data from raw JSONArray Twitter data
-	 * @param data
-	 */
+	@Override
 	public void populateData(Object data) {
 		if ( data instanceof JSONArray ) {
 			JSONArray rawJSONTweets = (JSONArray) data;
 			processTweetsData( rawJSONTweets );
-			isFirstLoadDone = true;	// indicate that we don't need to load the first chunk of data
 		}
 	}
 	

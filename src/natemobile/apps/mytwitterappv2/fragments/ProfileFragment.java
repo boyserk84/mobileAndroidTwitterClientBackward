@@ -1,6 +1,7 @@
 package natemobile.apps.mytwitterappv2.fragments;
 
 import natemobile.apps.mytwitterappv2.R;
+import natemobile.apps.mytwitterappv2.interfaces.ITwitterUserFragment;
 import natemobile.apps.mytwitterappv2.models.User;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +18,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * @author nkemavaha
  *
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements ITwitterUserFragment{
 	
 	//////////////////
 	// UI Elements
@@ -58,6 +59,7 @@ public class ProfileFragment extends Fragment {
 		ivProfileImage = (ImageView) view.findViewById( R.id.ivProfileImage );	
 	}
 	
+	@Override
 	public void populateData(Object data ) {
 		if ( data instanceof User) {
 			User userData = (User) data;

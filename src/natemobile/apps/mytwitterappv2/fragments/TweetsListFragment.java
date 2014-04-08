@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import natemobile.apps.mytwitterappv2.R;
 import natemobile.apps.mytwitterappv2.adapters.TweetsAdapter;
 import natemobile.apps.mytwitterappv2.interfaces.OnTweetItemSelected;
-import natemobile.apps.mytwitterappv2.interfaces.RequestDataAPI;
 import natemobile.apps.mytwitterappv2.interfaces.ResultDataAPIListener;
 import natemobile.apps.mytwitterappv2.models.Tweet;
 import natemobile.apps.mytwitterappv2.views.EndlessScrollListener;
@@ -24,21 +23,24 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import eu.erikw.PullToRefreshListView;
 import eu.erikw.PullToRefreshListView.OnRefreshListener;
 
 
 /**
- * TweestListFragment (Base fragment)
+ * Abstract TweestListFragment (Base fragment)
  * @author nkemavaha
  *
  */
-public class TweetsListFragment extends Fragment implements RequestDataAPI {
+public abstract class TweetsListFragment extends Fragment {
 	
 	public static final int TWEETS_WHEN_LOAD = 25;
 	public static final int TWEETS_TO_LOAD_WHEN_SCROLL = 10;
 	
+	/** Keep track of last tweet Id */
 	protected long lastTweetId = -1;
 	
 	/////////////////////
@@ -53,20 +55,46 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 	/** Listener from activity, using for listening for response result in fragment so that we can show it to user. */
 	ResultDataAPIListener listener;
 	
+	/** Listener from activity, using for notifying if the tweet item is being clicked. */
 	OnTweetItemSelected itemListener;
 	
+	///////////////////////
+	/// Adapters
+	///////////////////////
 	/** Adapter */
 	TweetsAdapter adapter;
+	
+	/** ArrayLIst of Tweets data */
+	ArrayList<Tweet> tweets;
 	
 	/** Flag indicate if this is the first time loading data */
 	private boolean isFirstLoad = true;
 	
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		lastTweetId = -1;	// Reset lastTweetId
+		tweets = new ArrayList<Tweet>();	// Init data
+	}
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View view = inflater.inflate( R.layout.fragment_tweetslist, container, false);	
 		if ( savedInstanceState == null ) {
+			lvTweets = (PullToRefreshListView) view.findViewById(  R.id.lvTweets );
+
+			// Setup listener for lvViews
+			setupViewsListeners();
 			
+			// Setup adapter
+			// TODO: Is it right to getActivity() overhere???
+			adapter = new TweetsAdapter( getActivity(), tweets);	
+			lvTweets.setAdapter( adapter );		
+			
+			// Signify that refresh has finished
+			lvTweets.onRefreshComplete();
 		}
-		return inflater.inflate( R.layout.fragment_tweetslist, container, false);	
+		return view;
 	}
 	
 	
@@ -94,23 +122,9 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+		// NOTE: Don't get view from Activity() overhere, race condition/unsafe operation may occur.
+		// Never put a view OR access Activity directly
 		super.onActivityCreated(savedInstanceState);
-		
-		lastTweetId = -1;	// Reset lastTweetId
-		lvTweets = (PullToRefreshListView) getActivity().findViewById( R.id.lvTweets );
-
-		ArrayList<Tweet> tweets = new ArrayList<Tweet>();
-
-		// Setup adapter
-		adapter = new TweetsAdapter( getActivity(), tweets);	
-		lvTweets.setAdapter( adapter );		
-		
-		// Setup listener for lvViews
-		setupViewsListeners();
-		
-		// Signify that refresh has finished
-		lvTweets.onRefreshComplete();
-		
 	}
 	
 	/**
@@ -125,7 +139,7 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 			public void onLoadMore(int page, int totalItemsCount) {
 				int loadCount = isFirstLoad? TWEETS_WHEN_LOAD : TWEETS_TO_LOAD_WHEN_SCROLL;
 				isFirstLoad = false;
-				requestTwitterData( loadCount, lastTweetId);
+				executeRequest( loadCount, lastTweetId);
 				
 			}
 		});
@@ -138,7 +152,7 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 				// Make sure you call listView.onRefreshComplete()
 				// once the loading is done. This can be done from here or any
 				// place such as when the network request has completed successfully.
-				requestTwitterData( TWEETS_WHEN_LOAD, lastTweetId);
+				executeRequest( TWEETS_WHEN_LOAD, lastTweetId);
 			}
 		});
 		
@@ -194,6 +208,69 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 	}
 	
 	/**
+	 * Helper function to create a generic callback/handler object
+	 * @return	callback object for passing to Twitter API.
+	 */
+	protected JsonHttpResponseHandler createTweetResponseHandler() {
+		// Setup handle Rest Client response
+		JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
+			@Override
+			public void onSuccess(JSONArray jsonTweets) {
+				processTweetsData( jsonTweets );
+			}
+
+			@Override
+			public void onFailure(Throwable e, JSONObject errorObject) {				
+				processFailureResponse( errorObject );
+			}
+		};
+		return handler;
+	}
+	
+	/**
+	 * Helper function to create a simple Twitter API request parameter
+	 * @param count			How many tweets we would like to retrieve
+	 * @param lastId		Last tweet Id (-1 for none), This is used for tracking how far we're down on the list.
+	 * @return RequestParams object, containing parameters for passing to Twitter API.
+	 */
+	protected RequestParams createAPIRequestParameters(int count, long lastId) {
+		// Prepare a request
+		RequestParams request = new RequestParams("count", count);
+
+		boolean isSubsequentLoad = (lastId != -1);
+
+		if ( isSubsequentLoad ) {
+			//since_id
+			request.put("max_id", Long.toString(lastId) );
+			// save the id
+			lastTweetId = lastId;
+		}
+		
+		return request;
+	}
+	
+	/**
+	 * Helper function to execute request to Twitter API
+	 * @param count			How many tweets we would like to retrieve
+	 * @param lastId		Last tweet Id (-1 for none), This is used for tracking how far we're down on the list.
+	 */
+	protected void executeRequest(int count, long lastId ) {
+		if ( listener.checkNetworkConnect() ) {
+			// Setup handle Rest Client response
+			JsonHttpResponseHandler handler = createTweetResponseHandler();
+
+			// Prepare a request
+			RequestParams request = createAPIRequestParameters(count, lastId);
+
+			// Call to MyTwitterApp singleton
+			callAPI( handler, request);	
+		} else {
+			// Make sure PUll-to-refresh is back to its normal state.
+			lvTweets.onRefreshComplete();
+		}
+	}
+	
+	/**
 	 * Helper function to process Tweetsdata upon onFailure
 	 * @param errorObject
 	 */
@@ -221,10 +298,17 @@ public class TweetsListFragment extends Fragment implements RequestDataAPI {
 	public TweetsAdapter getAdapter() {
 		return adapter;
 	}
-
-	// Override needs in the child class
-	@Override
-	public void requestTwitterData(int count, long lastId) {}
+	
+	///////////////////////////////////
+	/// Required override methods
+	//////////////////////////////////
+	
+	/**
+	 * Call API
+	 * @param handler		Handler methond when we receive a reponse from a server
+	 * @param params		Params to pass in
+	 */
+	public abstract void callAPI(JsonHttpResponseHandler handler, RequestParams params);
 	
 
 }
