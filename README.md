@@ -1,4 +1,7 @@
-# Twitter Client Mobile App version2 with backward compattiliblity with Gingerbread OS
+# Twitter Client Mobile App version2 with backward compatibility with Gingerbread OS (minSDK 10)
+
+![Alt text](Android_mytwitterappv2_01.PNG "Main App Screenshot") ![Alt text](Android_mytwitterappv2_02.PNG "Main App Screenshot")
+![Alt text](Android_mytwitterappv2_03.PNG "Main App Screenshot")
 
 ## Overview
 Twitter Client App
