@@ -79,6 +79,7 @@ public class ProfileActivity extends AbstractTwitterFragmentActivity {
 	 * @param screenName	Twiter screen name
 	 */
 	private void initLoadProfile(String screenName) {
+		// This is for populate data on the header.
 		JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONArray jsonArrayData) {
