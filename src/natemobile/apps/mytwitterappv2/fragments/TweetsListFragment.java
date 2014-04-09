@@ -86,10 +86,7 @@ public abstract class TweetsListFragment extends Fragment {
 			// Setup listener for lvViews
 			setupViewsListeners();
 			
-			// Setup adapter
-			// TODO: Is it right to getActivity() overhere???
-			adapter = new TweetsAdapter( getActivity(), tweets);	
-			lvTweets.setAdapter( adapter );		
+
 			
 			// Signify that refresh has finished
 			lvTweets.onRefreshComplete();
@@ -125,6 +122,11 @@ public abstract class TweetsListFragment extends Fragment {
 		// NOTE: Don't get view from Activity() overhere, race condition/unsafe operation may occur.
 		// Never put a view OR access Activity directly
 		super.onActivityCreated(savedInstanceState);
+		
+		// Setup adapter
+		// TODO: Is it right to getActivity() overhere???
+		adapter = new TweetsAdapter( getActivity(), tweets);	
+		lvTweets.setAdapter( adapter );		
 	}
 	
 	/**
@@ -139,6 +141,7 @@ public abstract class TweetsListFragment extends Fragment {
 			public void onLoadMore(int page, int totalItemsCount) {
 				int loadCount = isFirstLoad? TWEETS_WHEN_LOAD : TWEETS_TO_LOAD_WHEN_SCROLL;
 				isFirstLoad = false;
+				Log.d("DEBUG", "Execute request");
 				executeRequest( loadCount, lastTweetId);
 				
 			}
@@ -187,6 +190,7 @@ public abstract class TweetsListFragment extends Fragment {
 			}
 		}
 
+		Log.d("DEBUG", "processTweetsData firstDuplicateTweet " + ((firstDuplicateTweet != null)?firstDuplicateTweet.getUser().getScreenName():"nulller"));
 		// Either there are more tweets data OR there is no duplicate id.
 		boolean hasNewTweets = (tweets.size() > 0 || hasTheSameTweetId == false);
 

@@ -2,11 +2,8 @@ package natemobile.apps.mytwitterappv2;
 
 import natemobile.apps.mytwitterappv2.fragments.HomeTimelineFragment;
 import natemobile.apps.mytwitterappv2.fragments.MentionsFragment;
-import natemobile.apps.mytwitterappv2.interfaces.OnTweetItemSelected;
-import natemobile.apps.mytwitterappv2.interfaces.ResultDataAPIListener;
 import natemobile.apps.mytwitterappv2.models.Tweet;
 import natemobile.apps.mytwitterappv2.models.User;
-import natemobile.apps.mytwitterappv2.utils.NetworkUtils;
 
 import org.json.JSONObject;
 
@@ -14,16 +11,13 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -37,7 +31,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
  * @author nkemavaha
  *
  */
-public class TimelineActivity extends FragmentActivity implements TabListener, ResultDataAPIListener,OnTweetItemSelected {
+public class TimelineActivity extends AbstractTwitterFragmentActivity implements TabListener {
 	public static final int COMPOSE_REQUEST_CODE = 101;
 	public static final int COMPOSE_REQUEST_FAIL = -99;
 	public static final int USERPROFILE_REQUEST_CODE = 102;
@@ -119,13 +113,7 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		}
 	}
 	
-	/**
-	 * Helper function to display a toast message
-	 * @param msg		Message to display
-	 */
-	private void notifyOnToast(String msg) {
-		Toast.makeText( this, msg, Toast.LENGTH_SHORT).show();	
-	}	
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -302,17 +290,11 @@ public class TimelineActivity extends FragmentActivity implements TabListener, R
 		i.putExtra( ViewTweetActivity.VIEW_TWEET_KEY, tweet);
 		startActivity(i);
 	}
-
-	// When Internet connection is lost, notifying user.
-	@Override
-	public boolean checkNetworkConnect() {
-		boolean result = false;
-		if ( NetworkUtils.isNetworkAvailable( (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE) ) ) {
-			result = true;
-		} else {
-			notifyOnToast("Error: No Internet connection!");
-			result = false;
-		}
-		return result;
+	
+	public void onImageClick(View v) {
+		Log.d("DEBUG", v.getTag().toString());
+		openProfileActivity( v.getTag().toString() );
 	}
+
+
 }

@@ -4,26 +4,19 @@ import java.util.ArrayList;
 
 import natemobile.apps.mytwitterappv2.fragments.ProfileFragment;
 import natemobile.apps.mytwitterappv2.fragments.UserTimelineFragment;
-import natemobile.apps.mytwitterappv2.interfaces.OnTweetItemSelected;
-import natemobile.apps.mytwitterappv2.interfaces.ResultDataAPIListener;
 import natemobile.apps.mytwitterappv2.models.Tweet;
 import natemobile.apps.mytwitterappv2.models.User;
-import natemobile.apps.mytwitterappv2.utils.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -36,7 +29,7 @@ import com.loopj.android.http.RequestParams;
  * @author nkemavaha
  *
  */
-public class ProfileActivity extends FragmentActivity implements ResultDataAPIListener, OnTweetItemSelected {
+public class ProfileActivity extends AbstractTwitterFragmentActivity {
 
 	
 	TextView tvUserName;
@@ -64,14 +57,17 @@ public class ProfileActivity extends FragmentActivity implements ResultDataAPILi
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_profile);
 		
-		if ( savedInstanceState == null ) {
-			profileFragment = (ProfileFragment) getSupportFragmentManager().findFragmentById( R.id.fragmentUserProfile );
-			userTimelineFragment = (UserTimelineFragment) getSupportFragmentManager().findFragmentById( R.id.fragmentUserTimeline );
-		}
-
 		// retrieve data
 		Intent data = getIntent();
 		String screenName = data.getStringExtra( TimelineActivity.USER_SCREEN_NAME_KEY );
+		
+		if ( savedInstanceState == null ) {
+			profileFragment = (ProfileFragment) getSupportFragmentManager().findFragmentById( R.id.fragmentUserProfile );
+			userTimelineFragment = (UserTimelineFragment) getSupportFragmentManager().findFragmentById( R.id.fragmentUserTimeline );
+			
+			// setup screen name for userTimelineFragment so that it can fetch Async data.
+			userTimelineFragment.setScreenName(screenName);
+		}
 		
 		// Fetch profile data from Twitter API
 		initLoadProfile(screenName);
@@ -89,10 +85,12 @@ public class ProfileActivity extends FragmentActivity implements ResultDataAPILi
 				userTweets = Tweet.fromJson( jsonArrayData );
 				boolean hasData = (userTweets != null && userTweets.size() > 0) ;
 				
+				Tweet tweet = null;
 				if ( hasData ) {
-					Tweet tweet= userTweets.get(0);
+					tweet= userTweets.get(0);
 					populateProfileData( tweet.getUser(), jsonArrayData );
 				}
+				
 			}
 
 			@Override
@@ -113,8 +111,8 @@ public class ProfileActivity extends FragmentActivity implements ResultDataAPILi
 	 */
 	private void populateProfileData(User userData, JSONArray rawJSONTweets ) {
 		getActionBar().setTitle( "@" + userData.getScreenName() );
+		// Only profileFragment being populated directly from ProfileActivity since data is static.
 		profileFragment.populateData( userData );
-		userTimelineFragment.populateData( rawJSONTweets );
 	}
 	
 
@@ -138,7 +136,9 @@ public class ProfileActivity extends FragmentActivity implements ResultDataAPILi
 	}
 
 	@Override
-	public void onResponseReceived(String message) {}
+	public void onResponseReceived(String message) {
+		notifyOnToast( message );
+	}
 
 	@Override
 	public void onTweetItemSelect(Tweet tweet) {
@@ -146,25 +146,5 @@ public class ProfileActivity extends FragmentActivity implements ResultDataAPILi
 		i.putExtra( ViewTweetActivity.VIEW_TWEET_KEY, tweet);
 		startActivity(i);
 	}
-
-	@Override
-	public boolean checkNetworkConnect() {
-		boolean result = false;
-		if ( NetworkUtils.isNetworkAvailable( (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE) ) ) {
-			result = true;
-		} else {
-			notifyOnToast("Error: No Internet connection!");
-			result = false;
-		}
-		return result;
-	}
-	
-	/**
-	 * Helper function to display a toast message
-	 * @param msg		Message to display
-	 */
-	private void notifyOnToast(String msg) {
-		Toast.makeText( this, msg, Toast.LENGTH_SHORT).show();	
-	}	
 
 }
