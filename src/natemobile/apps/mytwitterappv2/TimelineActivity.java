@@ -59,7 +59,12 @@ public class TimelineActivity extends AbstractTwitterFragmentActivity implements
 	 * Current session user on this app
 	 */
 	private User currentSessionUser;
-
+	
+	
+	//TweetPageAdapter adapterViewPager;
+	//private int m_fragmentCountLoaded = 0;
+	
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +76,46 @@ public class TimelineActivity extends AbstractTwitterFragmentActivity implements
 			homeTimelineFragment= new HomeTimelineFragment();
 			mentionsFragment = new MentionsFragment();
 		}
+		
+//		ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
+//		adapterViewPager = new TweetPageAdapter( getSupportFragmentManager() );
+//		vpPager.setAdapter( adapterViewPager );
+//		
+//		//
+//		vpPager.setOnPageChangeListener( new OnPageChangeListener() {
+//			
+//			@Override
+//			public void onPageSelected(int position) {
+//				FragmentManager manager = getSupportFragmentManager();
+//				
+//				// use appropriate transaction for backward compatibility
+//				android.support.v4.app.FragmentTransaction fts = manager.beginTransaction();
+//				
+//				if ( m_fragmentCountLoaded == 0 ) {
+//					// Is this the right way to do swiping?
+//					if ( position == 1 ) {
+//						fts.hide( adapterViewPager.getRegisteredFragment( position - 1 ) );
+//					} else {
+//						fts.hide( adapterViewPager.getRegisteredFragment( 1 ) );
+//					}
+//				}
+//				
+//				if ( m_fragmentCountLoaded < 2) {
+//					// Replace viewPager with current fragment
+//					fts.replace( R.id.vpPager , adapterViewPager.getRegisteredFragment( position ) );
+//					m_fragmentCountLoaded++;
+//				}
+//				
+//				fts.commit();
+//				
+//			}
+//			
+//			@Override
+//			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+//			
+//			@Override
+//			public void onPageScrollStateChanged(int arg0) {}
+//		});
 		
 		setupNavigationTabs();
 		
@@ -252,9 +297,11 @@ public class TimelineActivity extends AbstractTwitterFragmentActivity implements
 		if ( tab.getTag() == "HomeTimelineFragment") {
 			// Set Framelayout container and replace it with HomeTimelineFragment
 			fts.replace( R.id.frameContainer , homeTimelineFragment);
+			//fts.replace( R.id.vpPager, homeTimelineFragment);
 		} else {
 			// Set Framelayout container and replace it with MentionsFragment
 			fts.replace( R.id.frameContainer , mentionsFragment );
+			//fts.replace( R.id.vpPager, mentionsFragment);
 		}
 		
 		// commit and update changes to fragment

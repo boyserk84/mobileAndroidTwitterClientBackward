@@ -34,5 +34,10 @@ public class HomeTimelineFragment extends TweetsListFragment {
 		MyTwitterApp.getRestClient().getHomeTimeline( handler, params );	
 	}
 	
+	public static HomeTimelineFragment newInstance(int page) {
+		HomeTimelineFragment fragmentFirst = new HomeTimelineFragment();
+        return fragmentFirst;	
+	}
+	
 	
 }

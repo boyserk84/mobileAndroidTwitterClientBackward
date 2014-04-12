@@ -24,4 +24,9 @@ public class MentionsFragment extends TweetsListFragment {
 	public void callAPI(JsonHttpResponseHandler handler, RequestParams params) {
 		MyTwitterApp.getRestClient().getMentionsTimeline( handler, params );
 	}
+	
+	public static MentionsFragment newInstance(int page) {
+		MentionsFragment fragmentFirst = new MentionsFragment();
+        return fragmentFirst;	
+	}
 }
